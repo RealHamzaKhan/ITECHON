@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:itechon/admin/views/scoreboard/update_score_board_screen.dart';
 import 'package:itechon/consts/colors.dart';
 
 import '../../../common/custom_appbar.dart';
@@ -106,7 +107,9 @@ class EventDetails extends StatelessWidget {
                 );
               }),),
               heightSpacer(height: 68.h),
-              customButton(height: 66.h,width: 246.w,text: "Update Score Board",color: kLightBlue),
+              customButton(height: 66.h,width: 246.w,text: "Update Score Board",color: kLightBlue,onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>const UpdateScoreBoardScreen()));
+              }),
               heightSpacer(height: 50.h),
               Row(
                 children: [

@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:dotted_border/dotted_border.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:itechon/common/custom_button.dart';
@@ -9,9 +12,28 @@ import 'package:itechon/common/width_spacer.dart';
 import '../../../common/custom_appbar.dart';
 import '../../../consts/colors.dart';
 
-class AddEvent extends StatelessWidget {
+class AddEvent extends StatefulWidget {
   const AddEvent({Key? key}) : super(key: key);
 
+  @override
+  State<AddEvent> createState() => _AddEventState();
+}
+
+class _AddEventState extends State<AddEvent> {
+  PlatformFile? _imageFile;
+  Future<void> pickImage()async{
+    FilePickerResult? result=await FilePicker.platform.pickFiles(
+      type: FileType.image
+    );
+    if(result==null){
+      return;
+    }
+    else{
+      setState(() {
+        _imageFile = result.files.first;
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.sizeOf(context).height;
@@ -40,38 +62,49 @@ class AddEvent extends StatelessWidget {
                   children: [
                     Align(
                       alignment: Alignment.center,
-                      child: DottedBorder(
-                        color: Colors.black.withOpacity(0.3),
-                        borderType: BorderType.RRect,
-                        radius: const Radius.circular(10),
-                        padding: const EdgeInsets.all(6),
-                        child: ClipRRect(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: 243.h,
-                            width: 367.w,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/icons/plus-circle.png',
-                                  height: 24.h,
-                                  width: 24.w,
-                                  color: Colors.black.withOpacity(0.3),
-                                ),
-                                widthSpacer(width: 4.w),
-                                customText(
-                                    text: "ADD IMAGE",
-                                    size: 18.sp,
-                                    fw: FontWeight.w500,
-                                    color: Colors.black.withOpacity(0.3)),
-                              ],
+                      child: _imageFile==null?GestureDetector(
+                        onTap: (){
+                          pickImage();
+                        },
+                        child: DottedBorder(
+                          color: Colors.black.withOpacity(0.3),
+                          borderType: BorderType.RRect,
+                          radius: const Radius.circular(10),
+                          padding: const EdgeInsets.all(6),
+                          child: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 243.h,
+                              width: 367.w,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/icons/plus-circle.png',
+                                    height: 24.h,
+                                    width: 24.w,
+                                    color: Colors.black.withOpacity(0.3),
+                                  ),
+                                  widthSpacer(width: 4.w),
+                                  customText(
+                                      text: "ADD IMAGE",
+                                      size: 18.sp,
+                                      fw: FontWeight.w500,
+                                      color: Colors.black.withOpacity(0.3)),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                      ):GestureDetector(
+                        onTap: (){
+                          pickImage();
+                        },
+                        child: Image.memory(Uint8List.fromList(_imageFile!.bytes!),height: 243.h,
+                          width: 367.w,),
+                      )
                     ),
                     heightSpacer(height: 35.h),
                     Row(
