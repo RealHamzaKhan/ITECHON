@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:itechon/admin/provider/admin_auth_provider.dart';
+import 'package:provider/provider.dart';
 import '../../../common/custom_text.dart';
 import '../../../common/height_spacer.dart';
 import '../../../consts/colors.dart';
 import '../../../students/views/auth/components/auth_background.dart';
 import '../../../students/views/auth/components/auth_textfield.dart';
-import '../../../students/views/auth/signup_screen.dart';
 import '../home/home_screen.dart';
 
-class AdminLoginScreen extends StatelessWidget {
+class AdminLoginScreen extends StatefulWidget {
   const AdminLoginScreen({Key? key}) : super(key: key);
 
+  @override
+  State<AdminLoginScreen> createState() => _AdminLoginScreenState();
+}
+
+class _AdminLoginScreenState extends State<AdminLoginScreen> {
+  final TextEditingController emailController=TextEditingController();
+  final TextEditingController passwordController=TextEditingController();
   @override
   Widget build(BuildContext context) {
     double height=MediaQuery.sizeOf(context).height;
@@ -44,25 +52,37 @@ class AdminLoginScreen extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        customText(text: "Admin Log In",color: kLight,size:36.sp,fw: FontWeight.w700 ),
+                        customText(text: "Log In",color: kLight,size:36.sp,fw: FontWeight.w700 ),
                         heightSpacer(height: height*0.02),
-                        authTextField(imagePath: "assets/icons/mail.png",hint: "Enter Your Email"),
-                        authTextField(imagePath: "assets/icons/Vector.png",hint: "Password"),
-                        GestureDetector(
-                          onTap: (){
-                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const HomeScreen()), (route) => false);
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: 45.92.h,
-                            width: 135.w,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: kLight
+                        authTextField(imagePath: "assets/icons/mail.png",hint: "Enter Your Email",controller:emailController),
+                        authTextField(imagePath: "assets/icons/Vector.png",hint: "Password",controller:passwordController,isObsecure:true),
+                        Consumer<AdminAuthProvider>(builder: (context,provider,child){
+                       return  provider.isLoading?  Container(
+                           alignment: Alignment.center,
+                           height: 45.92.h,
+                           width: 135.w,
+                           decoration: BoxDecoration(
+                               borderRadius: BorderRadius.circular(20),
+                               color: kLight.withOpacity(0.2),
+                           ),
+                           child: customText(text: "Log in",color: kLightBlue,fw: FontWeight.w600,size: 18.sp,),
+                         ): GestureDetector(
+                            onTap: (){
+                              provider.loginAdmin(context,emailController.text,passwordController.text);
+                              // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const HomeScreen()), (route) => false);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 45.92.h,
+                              width: 135.w,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: kLight
+                              ),
+                              child: customText(text: "Log in",color: kLightBlue,fw: FontWeight.w600,size: 18.sp,),
                             ),
-                            child: customText(text: "Log in",color: kLightBlue,fw: FontWeight.w600,size: 18.sp),
-                          ),
-                        ),
+                          );
+                        }),
                         heightSpacer(height: 30.h),
 
                       ],

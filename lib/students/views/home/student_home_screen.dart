@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:itechon/consts/colors.dart';
 import 'package:itechon/students/views/event/student_event_details.dart';
 import '../../../admin/views/events/event_details.dart';
 import '../../../common/custom_appbar.dart';
 import '../../../common/event_tile.dart';
+import '../../../services/firebase_services.dart';
 
 
 class StudentHome extends StatelessWidget {
@@ -33,17 +36,35 @@ class StudentHome extends StatelessWidget {
           child: SingleChildScrollView(
             child: Padding(
               padding:  EdgeInsets.symmetric(vertical: height*0.07),
-              child: Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                alignment: WrapAlignment.spaceEvenly,
-                spacing: width*0.06,
-                runSpacing: height*0.1,
-                children: List.generate(10, (index){
-                  return EventTile(height: height, width: width,onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const StudentEventDetails()));
-                  },);
-                }),
-              ),
+              child: StreamBuilder(
+                  stream: FirebaseServices.getAllEvents(),
+                  builder: (context,AsyncSnapshot<QuerySnapshot>snapshot){
+                    if(snapshot.connectionState==ConnectionState.waiting){
+                      return  Container(
+                        color: Colors.transparent,
+                        height: 600.h,
+                        width: 800.w,
+                        child: const Align(
+                            alignment: Alignment.center,
+                            child: CircularProgressIndicator()),
+                      );
+                    }
+                    else{
+                      return Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        alignment: WrapAlignment.spaceEvenly,
+                        spacing: width*0.06,
+                        runSpacing: height*0.1,
+                        children: List.generate(snapshot.data!.docs.length, (index){
+                          dynamic data=snapshot.data!.docs[index];
+                          return EventTile(height: height, width: width
+                            ,data: data,onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>StudentEventDetails(data: data,)));
+                            },);
+                        }),
+                      );
+                    }
+                  })
             ),
           )
       ),

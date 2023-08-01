@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:itechon/admin/views/auth/admin_login_screeen.dart';
 import 'package:itechon/admin/views/events/add_event.dart';
 import 'package:itechon/admin/views/requests/requests_screen.dart';
+import 'package:itechon/students/provider/student_auth_provider.dart';
 import '../consts/colors.dart';
 import 'width_spacer.dart';
 
@@ -41,7 +42,8 @@ AppBar customAppBar({required final BuildContext context,final bool isAdmin=true
     title: Image.asset('assets/images/app_logo.png',width: 342.w,height: 60.h,),
     actions: [
       AppBarActions(iconPath: "assets/icons/logout.png", text: "Logout",onTap: (){
-
+        StudentAuthProvider provider=StudentAuthProvider();
+        provider.logout(context);
       },),
       widthSpacer(width: 20.w)
     ],

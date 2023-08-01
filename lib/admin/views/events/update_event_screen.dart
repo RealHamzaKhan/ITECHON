@@ -1,57 +1,49 @@
-import 'dart:io';
-import 'dart:typed_data';
-
-import 'package:dotted_border/dotted_border.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:itechon/common/custom_button.dart';
-import 'package:itechon/common/custom_text.dart';
-import 'package:itechon/common/height_spacer.dart';
-import 'package:itechon/common/textfield_with_title.dart';
-import 'package:itechon/common/width_spacer.dart';
 import 'package:provider/provider.dart';
+
 import '../../../common/custom_appbar.dart';
+import '../../../common/custom_button.dart';
+import '../../../common/height_spacer.dart';
+import '../../../common/textfield_with_title.dart';
 import '../../../consts/colors.dart';
 import '../../provider/event_provider.dart';
 
-class AddEvent extends StatefulWidget {
-  const AddEvent({Key? key}) : super(key: key);
+class UpdateEventScreen extends StatefulWidget {
+  final dynamic data;
+  const UpdateEventScreen({Key? key,required this.data}) : super(key: key);
 
   @override
-  State<AddEvent> createState() => _AddEventState();
+  State<UpdateEventScreen> createState() => _UpdateEventScreenState();
 }
 
-class _AddEventState extends State<AddEvent> {
+class _UpdateEventScreenState extends State<UpdateEventScreen> {
   TextEditingController title=TextEditingController();
   TextEditingController date=TextEditingController();
   TextEditingController status=TextEditingController();
   TextEditingController time=TextEditingController();
   TextEditingController venue=TextEditingController();
   TextEditingController description=TextEditingController();
-  PlatformFile? _imageFile;
-  Future<void> pickImage()async{
-    FilePickerResult? result=await FilePicker.platform.pickFiles(
-      type: FileType.image
-    );
-    if(result==null){
-      return;
-    }
-    else{
-      setState(() {
-        _imageFile = result.files.first;
-      });
-    }
+  @override
+  void initState() {
+    title.text=widget.data["event_name"];
+    date.text=widget.data["event_date"];
+    status.text=widget.data["event_status"];
+    time.text=widget.data["event_time"];
+    venue.text=widget.data["event_venue"];
+    description.text=widget.data["event_description"];
+    // TODO: implement initState
+    super.initState();
   }
   @override
   void dispose() {
-    // TODO: implement dispose
     title.dispose();
-    description.dispose();
-    time.dispose();
     date.dispose();
     status.dispose();
+    time.dispose();
     venue.dispose();
+    description.dispose();
+    // TODO: implement dispose
     super.dispose();
   }
   @override
@@ -76,56 +68,10 @@ class _AddEventState extends State<AddEvent> {
           child: SingleChildScrollView(
             child: Padding(
                 padding:
-                    EdgeInsets.symmetric(vertical: 10.h, horizontal: 177.w),
+                EdgeInsets.symmetric(vertical: 10.h, horizontal: 177.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: _imageFile==null?GestureDetector(
-                        onTap: (){
-                          pickImage();
-                        },
-                        child: DottedBorder(
-                          color: Colors.black.withOpacity(0.3),
-                          borderType: BorderType.RRect,
-                          radius: const Radius.circular(10),
-                          padding: const EdgeInsets.all(6),
-                          child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10)),
-                            child: Container(
-                              alignment: Alignment.center,
-                              height: 243.h,
-                              width: 367.w,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    'assets/icons/plus-circle.png',
-                                    height: 24.h,
-                                    width: 24.w,
-                                    color: Colors.black.withOpacity(0.3),
-                                  ),
-                                  widthSpacer(width: 4.w),
-                                  customText(
-                                      text: "ADD IMAGE",
-                                      size: 18.sp,
-                                      fw: FontWeight.w500,
-                                      color: Colors.black.withOpacity(0.3)),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ):GestureDetector(
-                        onTap: (){
-                          pickImage();
-                        },
-                        child: Image.memory(Uint8List.fromList(_imageFile!.bytes!),height: 243.h,
-                          width: 367.w,),
-                      )
-                    ),
                     heightSpacer(height: 35.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -155,10 +101,11 @@ class _AddEventState extends State<AddEvent> {
                       return Align(
                           alignment: Alignment.center,
                           child: provider.isAdding?customButton(height: 66.h,width: 220.w,text: "Add Event",color: kLightBlue.withOpacity(0.2),
-                              
+
                           ):customButton(height: 66.h,width: 220.w,text: "Add Event",color: kLightBlue,
                               onTap: (){
-                                provider.addEvent(
+                                provider.updateEvent(
+                                docId: widget.data.id,
                                     context: context,
                                     eventtitle: title.text,
                                     date: date.text,
@@ -166,8 +113,7 @@ class _AddEventState extends State<AddEvent> {
                                     time: time.text,
                                     venue: venue.text,
                                     description: description.text,
-                                    image: _imageFile!.bytes);
-                              }
+                                );}
                           ));
                     }),
                     heightSpacer(height: 50.h),

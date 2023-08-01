@@ -13,7 +13,7 @@ Column textFormFieldWithTitle({final String? title,final String? hint,final Text
           text: title??"",
           color: Colors.black,
           size: 18.sp,
-          fw: FontWeight.w500),
+          fw: FontWeight.bold),
       heightSpacer(height: 9.h),
       Container(
         width: 367.w,

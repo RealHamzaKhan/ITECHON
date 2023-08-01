@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:itechon/admin/views/events/event_details.dart';
 
 import '../consts/colors.dart';
 import 'custom_text.dart';
@@ -9,7 +10,8 @@ class EventTile extends StatelessWidget {
   final double height;
   final double width;
   final Function()? onTap;
-  const EventTile({Key? key, required this.height, required this.width, this.onTap}) : super(key: key);
+  final dynamic data;
+  const EventTile({Key? key, required this.height, required this.width, this.onTap,required this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +29,10 @@ class EventTile extends StatelessWidget {
             child: Container(
               height: 185.h,
               width: 303.w,
-              decoration: const BoxDecoration(
-                  image: DecorationImage(image: NetworkImage("https://cdn.pixabay.com/photo/2017/01/09/22/24/guy-playing-billiard-1967834_1280.jpg"),fit: BoxFit.cover)
+              decoration:  BoxDecoration(
+                  image: DecorationImage(image: NetworkImage(data["event_image"]),fit: BoxFit.cover)
               ),
               clipBehavior: Clip.antiAlias,
-
             ),
           ),
           Expanded(child: Padding(
@@ -39,12 +40,11 @@ class EventTile extends StatelessWidget {
             child: Column(
               children: [
                 heightSpacer(height: 9.h),
-                customText(text: "Snooker Competition",fw: FontWeight.w800,size: 20.sp,alignment: TextAlign.center),
+                customText(text: data["event_name"],fw: FontWeight.w800,size: 20.sp,alignment: TextAlign.center),
                 heightSpacer(height: 5.h),
-                customText(text: "Monday, 9:00pm - 10:00pm",fw: FontWeight.w300,color: Colors.black.withOpacity(0.5),size: 15.sp),
+                customText(text: "${data["event_date"]+" "+data["event_time"]}",fw: FontWeight.w300,color: Colors.black.withOpacity(0.5),size: 15.sp),
                 heightSpacer(height: 6.h),
-                customText(text: "Lorem Ipsum is simply dummy text of unknown printer took a galley of type and scrambled it to make a type specimen book....",
-                    fw: FontWeight.w400,color: Colors.black.withOpacity(0.8),size: 15.sp,alignment: TextAlign.center),
+                customText(text: data["event_description"].toString().length>100?"${data["event_description"].toString().substring(0,100)} ....":data["event_description"].toString(), fw: FontWeight.w400,color: Colors.black.withOpacity(0.8),size: 15.sp,alignment: TextAlign.center),
                 const Spacer(),
                 GestureDetector(
                   onTap: onTap,

@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:itechon/consts/firebase_consts.dart';
+import 'package:itechon/services/firebase_services.dart';
 import 'package:itechon/students/views/event/enrollment_screen.dart';
 
 import '../../../common/custom_appbar.dart';
@@ -9,7 +12,8 @@ import '../../../common/height_spacer.dart';
 import '../../../consts/colors.dart';
 
 class StudentEventDetails extends StatelessWidget {
-  const StudentEventDetails({Key? key}) : super(key: key);
+  final dynamic data;
+  const StudentEventDetails({Key? key, this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +36,9 @@ class StudentEventDetails extends StatelessWidget {
                 clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                    image: const DecorationImage(image: NetworkImage("https://cdn.pixabay.com/photo/2019/04/17/22/00/billiards-4135500_1280.jpg"),fit: BoxFit.cover)
+                    image:  DecorationImage(image: NetworkImage(data['event_image']),fit: BoxFit.cover)
                 ),
-                child: Padding(
-                  padding:  EdgeInsets.symmetric(horizontal: 10.w,vertical: 10.h),
-                  child: customText(text:"⚫  Coming soon",size: 20.sp,color: Colors.yellow,fw: FontWeight.w700),
-                ),
+
 
               ),
               heightSpacer(height: height*0.03),
@@ -47,14 +48,13 @@ class StudentEventDetails extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        customText(text: "Snooker Competition",size: 40.sp,color: kLightBlue,fw: FontWeight.w800),
+                        customText(text: data['event_name'],size: 40.sp,color: kLightBlue,fw: FontWeight.w800),
                         const Spacer(),
-                        customText(text: "Monday, 9:00pm - 10:00 pm",size: 20.sp,color: kLightBlue,fw: FontWeight.w700),
+                        customText(text: "${data['event_date']}, ${data['event_time']}",size: 20.sp,color: kLightBlue,fw: FontWeight.w700),
                       ],
                     ),
                     heightSpacer(height: 20.h),
-                    customText(text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc faucibus consectetur orci nec condimentum. Suspendisse vitae lacus faucibus purus mollis facilisis. Vestibulum vitae ullamcorper purus.Integer vitae dolor ac massa viverra pretium. Nunc ipsum ligula, auctor elementum nunc quis, ultricies auctor quam. Nam feugiat, justo sed vehicula hendrerit, libero tellus dignissim nunc, vel tempor augue ante mattis enim. Proin ante diam, congue ac interdum non, ullamcorper id lectus. In ac egestas sapien, sit amet congue tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tortor sem, tincidunt sed posuere imperdiet, pretium ut eros. Phasellus auctor bibendum dolor, id euismod velit. Cras rhoncus magna blandit nisi scelerisque, nec lacinia lorem rutrum. Nunc tristique gravida nibh, et tincidunt enim accumsan at. Vivamus dapibus venenatis orci ac interdum. Curabitur vitae interdum mi, eget convallis urna. Nulla id auctor erat.Integer luctus ligula nec eros congue bibendum. Curabitur id lorem et ipsum interdum auctor sit amet id mauris. Sed varius lorem turpis. Integer ultricies, dolor at ullamcorper porta, arcu orci vehicula sem, at fringilla eros libero at justo. Sed aliquam at purus at consequat. Morbi sit amet ullamcorper dolor. Vivamus ut massa vulputate, feugiat nisi at, tempus ipsum. Etiam aliquet nunc turpis, elementum venenatis urna consectetur sed. Aliquam venenatis mi sit amet lorem pharetra, et facilisis metus tristique. Morbi ut nisi tempor, finibus ex eget, placerat nunc. Etiam ut consequat ligula, ac lacinia nisi.Vivamus accumsan purus maximus aliquet hendrerit. Nam condimentum tortor sed pellentesque molestie. Sed id iaculis sapien. Sed efficitur ornare purus eu fringilla. Nullam.",
-                        fw: FontWeight.w400,size: 18.sp,color: kLightBlue),
+                    customText(text: data['event_description'],fw: FontWeight.w400,size: 18.sp,color: kLightBlue),
                     heightSpacer(height: 20.h),
                     RichText(text: TextSpan(
                         children:[
@@ -63,17 +63,51 @@ class StudentEventDetails extends StatelessWidget {
                               style: appStyle(size: 30.sp,fw: FontWeight.w800,color: kLightBlue)
                           ),
                           TextSpan(
-                              text: "Jinnah Lab",
+                              text: data['event_venue'],
                               style: appStyle(size: 30.sp,fw: FontWeight.w400,color: kLightBlue)
                           ),
                         ]
                     )),
                   heightSpacer(height: 30.h),
-                  Align(
-                     alignment: Alignment.center,
-                      child: customButton(height: 66.h,width: 246.w,text: "Enroll Now",color: kLightBlue,onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>const EnrollmentScreen()));
-                      })),
+                  // data['enrolled_students']?Align(
+                  //     alignment: Alignment.center,
+                  //     child: customButton(height: 66.h,width: 246.w,text: "Enroll Now",color: kLightBlue,onTap: (){
+                  //       Navigator.push(context, MaterialPageRoute(builder: (context)=> EnrollmentScreen(data: data,)));
+                  //     })):
+                    StreamBuilder(
+                        stream: firestore.collection(eventCollection)
+                            .doc(data.id).collection(requestsCollection)
+                            .where('uid',isEqualTo: auth.currentUser!.uid).snapshots(),
+                        builder: (context,AsyncSnapshot<QuerySnapshot>snapshot){
+                      if(snapshot.connectionState==ConnectionState.waiting){
+                        return SizedBox.shrink();
+                      }
+                      else if(snapshot.data!.docs.isNotEmpty){
+                        return snapshot.data!.docs[0]['status']=='pending'?
+                        Align(
+                            alignment: Alignment.center,
+                            child: customButton(height: 66.h,width: 246.w,text: "Pending",color: Colors.grey.withOpacity(0.3),onTap: (){
+                            })):
+                        snapshot.data!.docs[0]['status']=='approved'?
+
+                        SizedBox.shrink():snapshot.data!.docs[0]['status']=='declined'?
+                        Align(
+                            alignment: Alignment.center,
+                            child: customButton(height: 66.h,width: 246.w,text: "Declined",color: Colors.red,onTap: (){
+                            })):Align(
+                            alignment: Alignment.center,
+                            child: customButton(height: 66.h,width: 246.w,text: "Enroll Now",color: kLightBlue,onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> EnrollmentScreen(data: data,)));
+                            }));
+                      }
+                      else{
+                        return Align(
+                            alignment: Alignment.center,
+                            child: customButton(height: 66.h,width: 246.w,text: "Enroll Now",color: kLightBlue,onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> EnrollmentScreen(data: data,)));
+                            }));
+                      }
+                    })
                   ],
                 ),
               ),
@@ -89,7 +123,7 @@ class StudentEventDetails extends StatelessWidget {
                   customText(text: "Score",size: 30.sp,fw: FontWeight.w500,color: Colors.black.withOpacity(0.5))
                 ],
               ),
-              Column(children: List.generate(4, (index){
+              Column(children: List.generate(data['scoreBoard'].length, (index){
                 return Column(
                   children: [
                     const Divider(),
@@ -97,9 +131,9 @@ class StudentEventDetails extends StatelessWidget {
                     heightSpacer(height: 36.h),
                     Row(
                       children: [
-                        customText(text: "Team $index",size: 30.sp,fw: FontWeight.w500,color: Colors.black.withOpacity(0.5)),
+                        customText(text: data["scoreBoard"][index]['team'],size: 30.sp,fw: FontWeight.w500,color: Colors.black.withOpacity(0.5)),
                         const Spacer(),
-                        customText(text: "100",size: 30.sp,fw: FontWeight.w500,color: Colors.black.withOpacity(0.5))
+                        customText(text: data["scoreBoard"][index]['score'],size: 30.sp,fw: FontWeight.w500,color: Colors.black.withOpacity(0.5))
                       ],
                     ),
 
@@ -113,20 +147,29 @@ class StudentEventDetails extends StatelessWidget {
                   customText(text: "Enrolled Teams",size: 40.sp,fw: FontWeight.w800,color: kLightBlue),
                 ],
               ),
-              Column(children: List.generate(4, (index){
-                return Column(
-                  children: [
-                    const Divider(),
+              StreamBuilder(
+                stream: FirebaseServices.getEnrolledTeams(data.id),
+                  builder: (context,AsyncSnapshot<QuerySnapshot>snapshot){
+                    if(snapshot.connectionState==ConnectionState.waiting){
+                      return const SizedBox.shrink();
+                    }
+                    else{
+                      return Column(children: List.generate(snapshot.data!.docs.length, (index){
+                        return Column(
+                          children: [
+                            const Divider(),
 
-                    heightSpacer(height: 36.h),
-                    Row(
-                      children: [
-                        customText(text: "Team $index",size: 30.sp,fw: FontWeight.w500,color: Colors.black.withOpacity(0.5)),
-                      ],
-                    ),
-                  ],
-                );
-              }),),
+                            heightSpacer(height: 36.h),
+                            Row(
+                              children: [
+                                customText(text: snapshot.data!.docs[index]['team_name'],size: 30.sp,fw: FontWeight.w500,color: Colors.black.withOpacity(0.5)),
+                              ],
+                            ),
+                          ],
+                        );
+                      }),);
+                    }
+                  }),
               heightSpacer(height: 68.h),
             ],
           ),

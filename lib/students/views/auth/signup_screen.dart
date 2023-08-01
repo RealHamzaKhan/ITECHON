@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:itechon/students/provider/student_auth_provider.dart';
 import 'package:itechon/students/views/home/student_home_screen.dart';
+import 'package:provider/provider.dart';
 import '../../../admin/views/home/home_screen.dart';
 import '../../../common/custom_text.dart';
 import '../../../common/height_spacer.dart';
@@ -8,9 +10,27 @@ import '../../../consts/colors.dart';
 import 'components/auth_textfield.dart';
 import 'components/auth_background.dart';
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 
+  @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  final TextEditingController email=TextEditingController();
+  final TextEditingController password=TextEditingController();
+  final TextEditingController name=TextEditingController();
+  final TextEditingController id=TextEditingController();
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    email.dispose();
+    password.dispose();
+    name.dispose();
+    id.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     double height=MediaQuery.sizeOf(context).height;
@@ -45,25 +65,36 @@ class SignupScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         customText(text: "Create Account ",color: kLight,size:36.sp,fw: FontWeight.w700 ),
-                        authTextField(imagePath: "assets/icons/user.png",hint: "Enter Your Name"),
-                        authTextField(imagePath: "assets/icons/mail.png",hint: "Enter Your Email"),
-                        authTextField(imagePath: "assets/icons/user-check.png",hint: "QAU ID (Optional)"),
-                        authTextField(imagePath: "assets/icons/Vector.png",hint: "Password"),
-                        GestureDetector(
-                          onTap: (){
-                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const StudentHome()), (route) => false);
-                          },
-                          child: Container(
+                        authTextField(imagePath: "assets/icons/user.png",hint: "Enter Your Name",controller: name),
+                        authTextField(imagePath: "assets/icons/mail.png",hint: "Enter Your Email",controller: email),
+                        authTextField(imagePath: "assets/icons/user-check.png",hint: "QAU ID (Optional)",controller: id),
+                        authTextField(imagePath: "assets/icons/Vector.png",hint: "Password",controller: password,isObsecure: true),
+                        Consumer<StudentAuthProvider>(builder: (context,provider,child){
+                          return provider.isLoading?Container(
                             alignment: Alignment.center,
                             height: 45.92.h,
                             width: 135.w,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                color: kLight
+                                color: Colors.blueGrey.withOpacity(0.2)
                             ),
                             child: customText(text: "Sign Up",color: kLightBlue,fw: FontWeight.w600,size: 18.sp),
-                          ),
-                        ),
+                          ):GestureDetector(
+                            onTap: (){
+                              provider.createUser(context: context, email: email.text, password: password.text, name: name.text, id: id.text);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 45.92.h,
+                              width: 135.w,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: kLight
+                              ),
+                              child: customText(text: "Sign Up",color: kLightBlue,fw: FontWeight.w600,size: 18.sp),
+                            ),
+                          );
+                        }),
                         heightSpacer(height: height*0.006),
                         GestureDetector(
                           onTap: (){

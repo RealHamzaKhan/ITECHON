@@ -2,18 +2,23 @@ import 'dart:typed_data';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:itechon/common/custom_text.dart';
 import 'package:itechon/common/height_spacer.dart';
 import 'package:itechon/common/textfield_with_title.dart';
+import 'package:itechon/consts/firebase_consts.dart';
+import 'package:itechon/students/provider/enrollment_provder.dart';
+import 'package:provider/provider.dart';
 import '../../../common/custom_appbar.dart';
 import '../../../common/custom_button.dart';
 import '../../../common/width_spacer.dart';
 import '../../../consts/colors.dart';
 
 class EnrollmentScreen extends StatefulWidget {
-  const EnrollmentScreen({Key? key}) : super(key: key);
+  final dynamic data;
+  const EnrollmentScreen({Key? key, this.data}) : super(key: key);
 
   @override
   State<EnrollmentScreen> createState() => _EnrollmentScreenState();
@@ -34,6 +39,22 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
       });
     }
   }
+  TextEditingController name=TextEditingController();
+  TextEditingController email=TextEditingController();
+  TextEditingController whatsapp=TextEditingController();
+  TextEditingController teamName=TextEditingController();
+  TextEditingController teamMembers=TextEditingController();
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    name.dispose();
+    email.dispose();
+    whatsapp.dispose();
+    teamName.dispose();
+    teamMembers.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.sizeOf(context).height;
@@ -68,18 +89,18 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
                               textFormFieldWithTitle(
                                   title: "Name",
                                   hint: "ENTER YOUR NAME",
-                                  minlines: 1),
+                                  minlines: 1,controller: name),
                               heightSpacer(height: 40.h),
                               textFormFieldWithTitle(
                                   title: "Email",
                                   hint: "ENTER YOUR EMAIL",
-                                  minlines: 1),
+                                  minlines: 1,controller: email),
                               heightSpacer(height: 40.h),
                               textFormFieldWithTitle(
-                                  title: "Whatsapp", hint: "", minlines: 1),
+                                  title: "Whatsapp", hint: "", minlines: 1,controller: whatsapp),
                               heightSpacer(height: 40.h),
                               textFormFieldWithTitle(
-                                  title: "Team Name", hint: "", minlines: 1),
+                                  title: "Team Name", hint: "", minlines: 1,controller: teamName),
                             ],
                           ),
                           Column(
@@ -88,7 +109,7 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
                               textFormFieldWithTitle(
                                   title: "Team Members Name",
                                   hint: "ENTER ALL TEAM MEMBERS NAME(IF ANY)",
-                                  minlines: 4),
+                                  minlines: 4,controller: teamMembers),
                               heightSpacer(height: 40.h),
                               customText(
                                 text:
@@ -149,11 +170,27 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
                         ],
                       ),
                       heightSpacer(height: 40.h),
-                      Align(
-                          alignment: Alignment.center,
-                          child: customButton(height: 66.h,width: 246.w,text: "Apply",color: kLightBlue,onTap: (){
+                      Consumer<EnrollmentProvider>(builder: (context,provider,child){
+                        return provider.isLoading?Align(
+                            alignment: Alignment.center,
+                            child: customButton(height: 66.h,width: 246.w,text: "Apply",color: Colors.grey.withOpacity(0.2),onTap: (){
 
-                          })),
+                            })):Align(
+                            alignment: Alignment.center,
+                            child: customButton(height: 66.h,width: 246.w,text: "Apply",color: kLightBlue,onTap: (){
+                              print("onpress");
+                              provider.enrollment(
+                                  context: context,
+                                  docId: widget.data.id,
+                                  uid: auth.currentUser!.uid,
+                                  name: name.text,
+                                  email: email.text,
+                                  whatsapp: whatsapp.text,
+                                  teamName: teamName.text,
+                                  teamMembers: teamMembers.text,
+                                  image: _imageFile!.bytes);
+                            }));
+                      })
                     ],
                   ))),
         ));

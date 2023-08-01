@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:itechon/admin/provider/event_provider.dart';
 import 'package:itechon/admin/views/scoreboard/score_board_dynamic_widget.dart';
 import 'package:itechon/common/custom_text.dart';
 import 'package:itechon/common/height_spacer.dart';
 import 'package:itechon/common/width_spacer.dart';
+import 'package:provider/provider.dart';
 
 import '../../../consts/colors.dart';
 
 class UpdateScoreBoardScreen extends StatefulWidget {
-  const UpdateScoreBoardScreen({Key? key}) : super(key: key);
+  final String docId;
+  const UpdateScoreBoardScreen({Key? key, required this.docId}) : super(key: key);
 
   @override
   State<UpdateScoreBoardScreen> createState() => _UpdateScoreBoardScreenState();
@@ -90,20 +93,32 @@ class _UpdateScoreBoardScreenState extends State<UpdateScoreBoardScreen> {
               SizedBox(
                 height: 20.h
               ),
-              GestureDetector(
-                onTap: () {
-                },
-                child: Container(
-                  alignment: Alignment.center,
-                  height: 70.h,
-                  width: 200.w,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(18),
-                    color: Colors.greenAccent.withOpacity(0.4),
+              Consumer<EventProvider>(builder: (context,provider,child){
+                return provider.isAdding?Container(
+                    alignment: Alignment.center,
+                    height: 70.h,
+                    width: 200.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(18),
+                      color: Colors.greenAccent.withOpacity(0.1),
+                    ),
+                    child: customText(text: "Update Score",size: 25.sp,color: kLight,fw: FontWeight.w800)
+                ):GestureDetector(
+                  onTap: () {
+                    provider.updateScoreBoard(context: context, dynamicWidget: dynamicWidget, id: widget.docId);
+                  },
+                  child: Container(
+                      alignment: Alignment.center,
+                      height: 70.h,
+                      width: 200.w,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(18),
+                        color: Colors.greenAccent.withOpacity(0.4),
+                      ),
+                      child: customText(text: "Update Score",size: 25.sp,color: kLight,fw: FontWeight.w800)
                   ),
-                  child: customText(text: "Update Score",size: 25.sp,color: kLight,fw: FontWeight.w800)
-                ),
-              ),
+                );
+              })
             ],
           ),
         )),

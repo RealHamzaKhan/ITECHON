@@ -4,12 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../common/custom_text.dart';
 import '../../../../consts/colors.dart';
 
-Container authTextField({final String? hint,final String? imagePath,final TextEditingController? controller}){
+Container authTextField({final String? hint,final String? imagePath,final TextEditingController? controller,bool isObsecure=false}){
   return Container(
     height: 51.91.h,
     width: 302.w,
     child: TextFormField(
-
+      obscureText: isObsecure,
       controller: controller,
       decoration: InputDecoration(
         fillColor: Colors.white,
