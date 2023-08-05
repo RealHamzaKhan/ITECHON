@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "399811753599",
+    "project_id": "itechon-57df1",
+    "storage_bucket": "itechon-57df1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:399811753599:android:ac02ad4adc29baf48af14a",
+        "android_client_info": {
+          "package_name": "com.example.itechon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "399811753599-crcuone618ool5i614il5us77h16vvl3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDi0GEXojueZmGKRm3XXOcLbcM3tLFK1Ow"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "399811753599-crcuone618ool5i614il5us77h16vvl3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
