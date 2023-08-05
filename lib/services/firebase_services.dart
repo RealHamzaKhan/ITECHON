@@ -28,5 +28,11 @@ static getEnrolledTeams(String docId){
 static getAllRequests(){
     return firestore.collectionGroup(requestsCollection).where('status',isEqualTo: 'pending').snapshots();
 }
+  static getGallery(){
+    return firestore.collection(galleryCollection).snapshots();
+  }
+  static getTeams(){
+    return firestore.collection(teamCollection).snapshots();
+  }
 
 }

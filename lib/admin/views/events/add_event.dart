@@ -43,6 +43,7 @@ class _AddEventState extends State<AddEvent> {
       });
     }
   }
+  bool check=false;
   @override
   void dispose() {
     // TODO: implement dispose
@@ -150,6 +151,18 @@ class _AddEventState extends State<AddEvent> {
                         textFormFieldWithTitle(minlines: 4,hint: "Enter Description of Event Here...",title: "Description",controller: description),
                       ],
                     ),
+                    heightSpacer(height: 20.h),
+                    Row(
+                      children: [
+                        Checkbox(value: check, onChanged: (val){
+                          setState(() {
+                            check=val!;
+                          });
+                        }),
+                         widthSpacer(width: 10.w),
+                         customText(text: "Concert or Seminar",size: 16.sp,color: Colors.black)
+                      ],
+                    ),
                     heightSpacer(height: 50.h),
                     Consumer<EventProvider>(builder: (context,provider,child){
                       return Align(
@@ -166,6 +179,7 @@ class _AddEventState extends State<AddEvent> {
                                     time: time.text,
                                     venue: venue.text,
                                     description: description.text,
+                                    isConcert: check,
                                     image: _imageFile!.bytes);
                               }
                           ));

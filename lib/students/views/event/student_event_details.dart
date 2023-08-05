@@ -112,18 +112,18 @@ class StudentEventDetails extends StatelessWidget {
                 ),
               ),
               heightSpacer(height: 50.h),
-              Align(
+              data['is_concert']==false?Align(
                   alignment: Alignment.centerLeft,
-                  child: customText(text: "Score Board",size: 40.sp,fw: FontWeight.w800,color: kLightBlue)),
+                  child: customText(text: "Score Board",size: 40.sp,fw: FontWeight.w800,color: kLightBlue)):SizedBox.shrink(),
               heightSpacer(height: 50.h),
-              Row(
+              data['is_concert']==false?Row(
                 children: [
                   customText(text: "Team Name",size: 30.sp,fw: FontWeight.w500,color: Colors.black.withOpacity(0.5)),
                   const Spacer(),
                   customText(text: "Score",size: 30.sp,fw: FontWeight.w500,color: Colors.black.withOpacity(0.5))
                 ],
-              ),
-              Column(children: List.generate(data['scoreBoard'].length, (index){
+              ):SizedBox.shrink(),
+              data['is_concert']==false?Column(children: List.generate(data['scoreBoard'].length, (index){
                 return Column(
                   children: [
                     const Divider(),
@@ -139,12 +139,12 @@ class StudentEventDetails extends StatelessWidget {
 
                   ],
                 );
-              }),),
+              }),):SizedBox.shrink(),
               heightSpacer(height: 68.h),
               heightSpacer(height: 50.h),
               Row(
                 children: [
-                  customText(text: "Enrolled Teams",size: 40.sp,fw: FontWeight.w800,color: kLightBlue),
+                  customText(text: "Enrolled",size: 40.sp,fw: FontWeight.w800,color: kLightBlue),
                 ],
               ),
               StreamBuilder(

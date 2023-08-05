@@ -132,15 +132,15 @@ class EventDetails extends StatelessWidget {
                           ),
                         ),
                         heightSpacer(height: 50.h),
-                        Align(
+                        data['is_concert']==false? Align(
                             alignment: Alignment.centerLeft,
                             child: customText(
                                 text: "Score Board",
                                 size: 40,
                                 fw: FontWeight.w800,
-                                color: kLightBlue)),
+                                color: kLightBlue)):SizedBox.shrink(),
                         heightSpacer(height: 50.h),
-                        Row(
+                        data['is_concert']==false?Row(
                           children: [
                             customText(
                                 text: "Team Name",
@@ -154,8 +154,8 @@ class EventDetails extends StatelessWidget {
                                 fw: FontWeight.w500,
                                 color: kLightBlue)
                           ],
-                        ),
-                        Column(
+                        ):SizedBox.shrink(),
+                        data['is_concert']==false?Column(
                           children:
                               List.generate(data['scoreBoard'].length, (index) {
                             return Column(
@@ -181,9 +181,9 @@ class EventDetails extends StatelessWidget {
                               ],
                             );
                           }),
-                        ),
+                        ):SizedBox.shrink(),
                         heightSpacer(height: 68.h),
-                        customButton(
+                        data['is_concert']==false?customButton(
                             height: 66.h,
                             width: 246.w,
                             text: "Update Score Board",
@@ -196,12 +196,12 @@ class EventDetails extends StatelessWidget {
                                           UpdateScoreBoardScreen(
                                             docId: data.id,
                                           )));
-                            }),
+                            }):SizedBox.shrink(),
                         heightSpacer(height: 50.h),
                         Align(
                             alignment: Alignment.centerLeft,
                             child: customText(
-                                text: "Enrolled Teams",
+                                text: "Enrolled",
                                 size: 40,
                                 fw: FontWeight.w800,
                                 color: kLightBlue)),

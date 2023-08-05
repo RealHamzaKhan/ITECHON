@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:itechon/admin/views/auth/admin_login_screeen.dart';
 import 'package:itechon/students/views/home/student_home_screen.dart';
+import 'package:itechon/students/views/home/student_main_home.dart';
 import 'package:provider/provider.dart';
 import '../../../admin/views/home/home_screen.dart';
 import '../../../common/custom_text.dart';
@@ -66,6 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         heightSpacer(height: height*0.02),
                         authTextField(imagePath: "assets/icons/mail.png",hint: "Enter Your Email",controller: email),
                         authTextField(imagePath: "assets/icons/Vector.png",hint: "Password",controller: password,isObsecure: true),
+
                         Consumer<StudentAuthProvider>(builder: (context,provider,child){
                           return provider.isLoading?Container(
                             alignment: Alignment.center,
@@ -80,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             onTap: (){
                               // Navigator.pushAndRemoveUntil(
                               //     context,
-                              //     MaterialPageRoute(builder: (context) => const StudentHome()),
+                              //     MaterialPageRoute(builder: (context) => const StudentMainHome()),
                               //         (route) => false);
                               provider.login(context: context, email: email.text, password: password.text);
                             },
@@ -96,7 +98,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           );
                         }),
-                        heightSpacer(height: height*0.006),
+                        heightSpacer(height: 10.h),
+                        GestureDetector(
+                          onTap: (){
+                            StudentAuthProvider().resetPassword(context: context, email: email.text);
+                          },
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: customText(text: "Forget Password?",size: 16.sp,fw: FontWeight.w600,color: Colors.redAccent),
+                          ),
+                        ),
+                        // heightSpacer(height: height*0.006),
                         GestureDetector(
                           onTap: (){
                             Navigator.push(context, MaterialPageRoute(builder: (context)=>const SignupScreen()));

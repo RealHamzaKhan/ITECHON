@@ -24,6 +24,7 @@ class EventProvider with ChangeNotifier{
     required final String time,
     required final String venue,
     required final String description,
+    required final bool isConcert,
     required final image
   })async{
     setIsAdding(true);
@@ -38,6 +39,7 @@ class EventProvider with ChangeNotifier{
         "event_description":description,
         "enrolled_students":[],
         "scoreBoard":[],
+        "is_concert":isConcert,
         "event_image":url
       });
       showCustomSnackbar(context, "Event Added Succesfully", Colors.green);
@@ -163,4 +165,47 @@ void approveStudent(String uid)async{
     }
   }
 
+  void addTeam({
+    required final BuildContext context,
+    required final String teamName,
+    required final String description,
+    required final image
+  })async{
+    setIsAdding(true);
+    try{
+      var url=await uploadImage(image);
+      await firestore.collection(teamCollection).doc().set({
+        "team_name":teamName,
+        "team_description":description,
+        "team_image":url
+      });
+      showCustomSnackbar(context, "Team Added Succesfully", Colors.green);
+      setIsAdding(false);
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>HomeScreen()), (route) => false);
+    }
+    catch(e){
+      showCustomSnackbar(context, e.toString(), Colors.red);
+      setIsAdding(false);
+    }
+  }
+
+  void addImageToGallery({
+    required final BuildContext context,
+    required final image
+  })async{
+    setIsAdding(true);
+    try{
+      var url=await uploadImage(image);
+      await firestore.collection(galleryCollection).doc().set({
+        "image":url
+      });
+      showCustomSnackbar(context, "Image Added Succesfully", Colors.green);
+      setIsAdding(false);
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>HomeScreen()), (route) => false);
+    }
+    catch(e){
+      showCustomSnackbar(context, e.toString(), Colors.red);
+      setIsAdding(false);
+    }
+  }
 }
