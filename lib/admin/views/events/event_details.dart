@@ -6,6 +6,7 @@ import 'package:itechon/admin/views/events/update_event_screen.dart';
 import 'package:itechon/admin/views/scoreboard/update_score_board_screen.dart';
 import 'package:itechon/common/progress_indicator.dart';
 import 'package:itechon/consts/colors.dart';
+import 'package:itechon/consts/firebase_consts.dart';
 import 'package:itechon/services/firebase_services.dart';
 import 'package:provider/provider.dart';
 
@@ -238,7 +239,15 @@ class EventDetails extends StatelessWidget {
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           customText(text: snapshot.data!.docs[index]['team_name'],size: 30.sp,fw: FontWeight.w500,color: Colors.black.withOpacity(0.5)),
-                                          customText(text: snapshot.data!.docs[index]['whatsapp'],size: 30.sp,fw: FontWeight.w500,color: Colors.black.withOpacity(0.5)),
+                                          Row(
+                                            children: [
+                                              customText(text: snapshot.data!.docs[index]['whatsapp'],size: 30.sp,fw: FontWeight.w500,color: Colors.black.withOpacity(0.5)),
+                                              SizedBox(width: 10.w,),
+                                              IconButton(onPressed: ()async{
+                                               await firestore.collection(eventCollection).doc(data.id).collection(requestsCollection).doc(snapshot.data!.docs[index].id).delete();
+                                              }, icon: const Icon(Icons.delete,color: Colors.red,))
+                                            ],
+                                          ),
                                         ],
                                       ),
                                     ],
