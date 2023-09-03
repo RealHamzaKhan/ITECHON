@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,8 @@ import 'package:itechon/common/custom_text.dart';
 import 'package:itechon/common/height_spacer.dart';
 import 'package:itechon/common/textfield_with_title.dart';
 import 'package:itechon/common/width_spacer.dart';
+import 'package:itechon/consts/firebase_consts.dart';
+import 'package:itechon/services/firebase_services.dart';
 import 'package:provider/provider.dart';
 import '../../../common/custom_appbar.dart';
 import '../../../consts/colors.dart';
@@ -128,6 +131,35 @@ class _AddToGalleryState extends State<AddToGallery> {
                           ));
                     }),
                     heightSpacer(height: 50.h),
+                    StreamBuilder(stream: FirebaseServices.getGallery(), builder: (context,AsyncSnapshot<QuerySnapshot>snapshot){
+                      if(!snapshot.hasData || snapshot.data!.docs.isEmpty || snapshot.connectionState==ConnectionState.waiting){
+                        return const SizedBox.shrink();
+                      }
+                      else{
+                        return Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          alignment: WrapAlignment.spaceEvenly,
+                          spacing: width*0.01,
+                          runSpacing: height*0.07,
+                          children: List.generate(snapshot.data!.docs.length, (index){
+                            dynamic data=snapshot.data!.docs[index];
+                            return Stack(
+                              children: [
+                                SizedBox(
+                                    height: 400.h,
+                                    width: 450.w,
+                                    child: Image.network(data['image'],fit: BoxFit.cover,)),
+                                Positioned(top: 0,right: 0,
+                                child: IconButton(onPressed: (){
+                                  firestore.collection(galleryCollection).doc(data.id).delete();
+                                }, icon: Icon(Icons.cancel,color: Colors.red,)),
+                                )
+                              ],
+                            );
+                          }),
+                        );
+                      }
+                    })
                   ],
                 )),
           )),

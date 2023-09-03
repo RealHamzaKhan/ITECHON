@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:itechon/students/provider/student_auth_provider.dart';
 import 'package:itechon/students/views/home/student_home_screen.dart';
@@ -22,6 +23,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController password=TextEditingController();
   final TextEditingController name=TextEditingController();
   final TextEditingController id=TextEditingController();
+  TextInputFormatter nameInputFormatter = FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]'));
   @override
   void dispose() {
     // TODO: implement dispose
@@ -65,7 +67,8 @@ class _SignupScreenState extends State<SignupScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         customText(text: "Create Account ",color: kLight,size:36.sp,fw: FontWeight.w700 ),
-                        authTextField(imagePath: "assets/icons/user.png",hint: "Enter Your Name",controller: name),
+                        authTextField(imagePath: "assets/icons/user.png",hint: "Enter Your Name",controller: name,
+                        keyboardType: TextInputType.text,inputformatters: [nameInputFormatter]),
                         authTextField(imagePath: "assets/icons/mail.png",hint: "Enter Your Email",controller: email),
                         authTextField(imagePath: "assets/icons/user-check.png",hint: "QAU ID (Optional)",controller: id),
                         authTextField(imagePath: "assets/icons/Vector.png",hint: "Password",controller: password,isObsecure: true),

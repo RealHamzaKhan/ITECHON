@@ -10,3 +10,4 @@ const studentsCollection="students";
 const requestsCollection="requests";
 const teamCollection="teams";
 const galleryCollection="gallery";
+const volunteers="volunteers";

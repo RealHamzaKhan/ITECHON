@@ -94,4 +94,48 @@ void enrollment({
   //         }));
   //   }
   // }
+void enrollInTeam({
+  required BuildContext context,
+  required String name,
+  required String email,
+  required String teamName,
+  required String semester,
+  required String whatsapp,
+  required String qauId,
+})async{
+    try{
+      setLoading(true);
+      QuerySnapshot snapshot=await firestore.collection(volunteers).get();
+      bool duplicate=false;
+      for(int i=0;i<snapshot.docs.length;i++){
+        if(snapshot.docs[i]['uid']==auth.currentUser!.uid){
+          duplicate=true;
+        }
+      }
+      if(duplicate==false){
+        await firestore.collection(volunteers).add({
+          'uid':auth.currentUser!.uid,
+          'name':name.toString(),
+          'semester':semester.toString(),
+          'email':email.toString(),
+          'team_name':teamName.toString(),
+          'whatsapp':whatsapp.toString(),
+          'qau_id':qauId.toString(),
+
+        }).then((value) {
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>const StudentHome()));
+          showCustomSnackbar(context, "You have been enrolled into the team", Colors.green);
+        });
+      }
+      else{
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>const StudentHome()));
+        showCustomSnackbar(context, "You are already enrolled", Colors.red);
+      }
+      setLoading(false);
+    }
+    catch(e){
+      setLoading(false);
+      showCustomSnackbar(context, e.toString(), Colors.red);
+    }
+}
 }

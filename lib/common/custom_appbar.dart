@@ -6,7 +6,9 @@ import 'package:itechon/admin/views/gallery/gallery_screen.dart';
 import 'package:itechon/admin/views/home/home_screen.dart';
 import 'package:itechon/admin/views/requests/requests_screen.dart';
 import 'package:itechon/admin/views/teams/add_team_screen.dart';
+import 'package:itechon/admin/views/teams/team_member.dart';
 import 'package:itechon/students/provider/student_auth_provider.dart';
+import 'package:itechon/students/views/event/become_team_screen.dart';
 import 'package:itechon/students/views/gallery/galleryscreen.dart';
 import 'package:itechon/students/views/home/student_home_screen.dart';
 import 'package:itechon/students/views/home/student_main_home.dart';
@@ -28,11 +30,16 @@ AppBar customAppBar({required final BuildContext context,final bool isAdmin=true
         },
         child: Image.asset('assets/images/app_logo.png',width: 342.w,height: 60.h,)),
     actions:[
+
        AppBarActions( iconPath:'assets/icons/git-pull-request.png', text: "Requests",onTap: (){
         Navigator.push(context, MaterialPageRoute(builder: (context)=>const RequestsScreen()));
       },),
+      widthSpacer(width: 20.w),
+      AppBarActions(iconPath: "assets/icons/group.png", text: "Team members",onTap: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> TeamMembers()));
+      },),
       widthSpacer(width: 25.w),
-      AppBarActions( iconPath:'assets/icons/gallery.png', text: "Add To Gallery",onTap: (){
+      AppBarActions( iconPath:'assets/icons/gallery.png', text: "Gallery",onTap: (){
         Navigator.push(context, MaterialPageRoute(builder: (context)=>const AddToGallery()));
       },),
       widthSpacer(width: 25.w),
@@ -40,7 +47,7 @@ AppBar customAppBar({required final BuildContext context,final bool isAdmin=true
         Navigator.push(context, MaterialPageRoute(builder: (context)=>const AddEvent()));
       },),
       widthSpacer(width: 25.w),
-      AppBarActions( iconPath:'assets/icons/group.png', text: "Add Team",onTap: (){
+      AppBarActions( iconPath:'assets/icons/group.png', text: "Teams",onTap: (){
         Navigator.push(context, MaterialPageRoute(builder: (context)=>const AddTeamScreen()));
       },),
       widthSpacer(width: 25.w),
@@ -63,6 +70,10 @@ AppBar customAppBar({required final BuildContext context,final bool isAdmin=true
         },
         child: Image.asset('assets/images/app_logo.png',width: 342.w,height: 60.h,)),
     actions: [
+      AppBarActions(iconPath: "assets/icons/plus-circle.png", text: "Become volunteer",onTap: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>const TeamEnrollment()));
+      },),
+      widthSpacer(width: 20.w),
       AppBarActions( iconPath:'assets/icons/gallery.png', text: "Gallery",onTap: (){
         Navigator.push(context, MaterialPageRoute(builder: (context)=>const GalleryScreen()));
       },),

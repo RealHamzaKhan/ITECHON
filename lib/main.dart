@@ -17,6 +17,15 @@ void main()async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
+Widget checkUser(){
+  User? user=auth.currentUser;
+  if(user==null){
+    return const LoginScreen();
+  }
+  else{
+    return const StudentHome();
+  }
+}
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -39,7 +48,7 @@ class MyApp extends StatelessWidget {
           home: child,
         );
       },
-      child: const LoginScreen(),
+      child: checkUser(),
     ),);
   }
 }

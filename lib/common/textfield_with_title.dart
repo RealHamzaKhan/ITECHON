@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../consts/colors.dart';
 import 'custom_text.dart';
 import 'height_spacer.dart';
 
-Column textFormFieldWithTitle({final String? title,final String? hint,final TextEditingController? controller,final int? minlines}){
+Column textFormFieldWithTitle({final String? title,final String? hint,final TextEditingController? controller,final int? minlines,
+List<TextInputFormatter>? formatters}){
   return  Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -22,6 +24,7 @@ Column textFormFieldWithTitle({final String? title,final String? hint,final Text
           color: kTextFieldColor,
         ),
         child: TextFormField(
+          inputFormatters: formatters,
           minLines: minlines,
           maxLines: null,
           controller: controller,
